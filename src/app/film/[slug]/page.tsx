@@ -29,7 +29,6 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export default function MovieDetailPage() {
   const [loved, setLoved] = useState<boolean>(false);
   const { slug } = useParams();
-  const router = useRouter();
 
   const { data, error, isLoading } = useSWR(
     `${APP_DOMAIN_FRONTEND}/phim/${slug}`,
@@ -74,7 +73,7 @@ export default function MovieDetailPage() {
   }
 
   const filmData = data?.movie as FilmData;
-  const episodes = data?.episodes as EpisodesResponse;
+  const episodes = data?.episodes;
 
   console.log(JSON.stringify(episodes));
 
@@ -184,13 +183,13 @@ export default function MovieDetailPage() {
         <>
           <Title level={2}>Movie List</Title>
           <Row>
-            {episodes[0].server_data.map((item: ServerData, i) => (
+            {episodes[0].server_data.map((item: ServerData, index: number) => (
               <Col
                 xs={6}
                 sm={4}
                 md={3}
                 lg={2}
-                key={i}
+                key={index}
                 style={{ marginBottom: 10 }}
               >
                 <Tooltip title={`Click to open ${item.name}`}>
