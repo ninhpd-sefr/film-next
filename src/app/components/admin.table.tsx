@@ -165,7 +165,9 @@ const MyTable: React.FC = () => {
   return (
     <>
       <Table
-        dataSource={data?.sort((a: BlogData, b: BlogData) => b.id - a.id)}
+        dataSource={data?.sort(
+          (a: BlogData, b: BlogData) => Number(b.id) - Number(a.id)
+        )}
         columns={columns}
         rowKey="id"
       />
