@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Input,
   Typography,
@@ -17,6 +17,7 @@ import { APP_DOMAIN_CDN_IMAGE, APP_DOMAIN_FRONTEND } from "../../../constant";
 import { useRouter } from "next/navigation";
 import { FilmData } from "../../../types/app";
 import SkeletonLoader from "../components/film.skeleton.loader";
+import NProgress from "nprogress";
 
 export default function Page() {
   const { Search } = Input;
@@ -51,6 +52,17 @@ export default function Page() {
       : null,
     fetcher
   );
+
+  useEffect(() => {
+    if (isLoading) {
+      NProgress.start();
+    } else {
+      NProgress.done();
+    }
+    return () => {
+      NProgress.done();
+    };
+  }, [isLoading]);
 
   const onSearch = (value: string) => {
     if (!value.trim()) {

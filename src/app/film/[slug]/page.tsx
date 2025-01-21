@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import useSWR from "swr";
 import {
@@ -12,6 +12,9 @@ import {
   Tooltip,
   Button,
   Skeleton,
+  Modal,
+  Input,
+  message,
 } from "antd";
 import { EpisodesResponse, FilmData, ServerData } from "../../../../types/app";
 const { Title, Paragraph, Text } = Typography;
@@ -23,18 +26,39 @@ import {
 import { MoviePlayer } from "@/app/components/movie.player";
 import { APP_DOMAIN_FRONTEND } from "../../../../constant";
 import { DetailSkeletonLoader } from "@/app/components/film.detail.skeleton.loader";
+import NProgress from "nprogress";
 
 // Fetcher function for useSWR
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function MovieDetailPage() {
   const [loved, setLoved] = useState<boolean>(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [fullURL, setFullURL] = useState<string>("");
   const { slug } = useParams();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const currentURL = `${window.location.origin}/film/${slug}`;
+      setFullURL(currentURL);
+    }
+  }, [slug]);
 
   const { data, error, isLoading } = useSWR(
     `${APP_DOMAIN_FRONTEND}/phim/${slug}`,
     fetcher
   );
+
+  useEffect(() => {
+    if (isLoading) {
+      NProgress.start();
+    } else {
+      NProgress.done();
+    }
+    return () => {
+      NProgress.done();
+    };
+  }, [isLoading]);
 
   if (isLoading) {
     return (
@@ -74,6 +98,19 @@ export default function MovieDetailPage() {
   const episodes = data?.episodes;
 
   console.log(JSON.stringify(episodes));
+
+  const handleShare = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(fullURL);
+      message.success("Link copied to clipboard!");
+    } catch (error) {
+      message.error("Failed to copy the link!");
+    }
+  };
 
   return (
     <div style={{ paddingBottom: 20 }}>
@@ -129,6 +166,7 @@ export default function MovieDetailPage() {
                     type="link"
                     shape="circle"
                     icon={<ShareAltOutlined />}
+                    onClick={handleShare}
                   />
                 </Tooltip>{" "}
                 Share
@@ -206,6 +244,19 @@ export default function MovieDetailPage() {
           </Row>
         </>
       )}
+      <Modal
+        title="Share Movie"
+        open={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        footer={null}
+      >
+        <div>
+          <Input value={fullURL} readOnly style={{ marginBottom: "10px" }} />
+          <Button type="primary" onClick={handleCopy} block>
+            Copy Link
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 import { Card, Typography, Spin, Row, Col, Pagination } from "antd";
 import { PlayCircleOutlined } from "@ant-design/icons";
@@ -8,8 +8,7 @@ import { FilmData } from "../../../types/app";
 import { APP_DOMAIN_CDN_IMAGE, APP_DOMAIN_FRONTEND } from "../../../constant";
 import SkeletonLoader from "./film.skeleton.loader";
 import { useRouter } from "next/navigation";
-
-const { Title } = Typography;
+import NProgress from "nprogress";
 
 // Fetcher function
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -20,12 +19,23 @@ export default function FilmList({ category }: { category: string }) {
 
   const router = useRouter();
 
-  const { data, error } = useSWR(
+  const { data, error, isLoading } = useSWR(
     category
       ? `${APP_DOMAIN_FRONTEND}/v1/api/danh-sach/${category}?page=${currentPage}&limit=${itemsPerPage}`
       : null,
     fetcher
   );
+
+  useEffect(() => {
+    if (isLoading) {
+      NProgress.start();
+    } else {
+      NProgress.done();
+    }
+    return () => {
+      NProgress.done();
+    };
+  }, [isLoading]);
 
   if (error) return <div>Error loading movies.</div>;
   if (!data) return <SkeletonLoader count={itemsPerPage} />;

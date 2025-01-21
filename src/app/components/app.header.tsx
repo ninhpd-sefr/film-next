@@ -1,8 +1,8 @@
-"use client"; // This forces the component to run on the client side
+"use client";
 
 import React, { useState } from "react";
 import { Button, Layout, Menu, Drawer, Row, Col } from "antd";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   DownloadOutlined,
   SearchOutlined,
@@ -14,6 +14,7 @@ const { Header: AntHeader } = Layout;
 const Header = () => {
   const [isDrawerVisible, setDrawerVisible] = useState(false);
   const router = useRouter();
+  const pathname = usePathname(); // Get the current path
 
   const handleDrawerToggle = () => {
     setDrawerVisible(!isDrawerVisible);
@@ -21,6 +22,16 @@ const Header = () => {
 
   const closeDrawer = () => {
     setDrawerVisible(false);
+  };
+
+  // Map paths to menu keys
+  const getSelectedKey = () => {
+    if (pathname === "/") return "1";
+    if (pathname.startsWith("/series")) return "2";
+    if (pathname.startsWith("/animated")) return "3";
+    if (pathname.startsWith("/tvshows")) return "4";
+    if (pathname.startsWith("/search")) return "5";
+    return ""; // No active key for unknown paths
   };
 
   return (
@@ -58,7 +69,7 @@ const Header = () => {
           <Menu
             theme="dark"
             mode="horizontal"
-            defaultSelectedKeys={["1"]}
+            selectedKeys={[getSelectedKey()]} // Set selected key dynamically
             style={{ minWidth: 400 }}
           >
             <Menu.Item key="1" onClick={() => router.push("/")}>
@@ -101,8 +112,14 @@ const Header = () => {
         onClose={closeDrawer}
         open={isDrawerVisible}
       >
-        <Menu mode="vertical">
-          <Menu.Item key="0">
+        <Menu mode="vertical" selectedKeys={[getSelectedKey()]}>
+          <Menu.Item
+            key="5"
+            onClick={() => {
+              closeDrawer();
+              router.push("/search");
+            }}
+          >
             <SearchOutlined /> Search
           </Menu.Item>
           <Menu.Item
@@ -143,19 +160,6 @@ const Header = () => {
           </Menu.Item>
         </Menu>
       </Drawer>
-
-      {/* <style jsx>{`
-        @media (max-width: 768px) {
-          .mobile-menu-btn {
-            display: inline-block !important;
-          }
-        }
-        @media (min-width: 768px) {
-          .mobile-menu-btn {
-            display: none;
-          }
-        }
-      `}</style> */}
     </AntHeader>
   );
 };
