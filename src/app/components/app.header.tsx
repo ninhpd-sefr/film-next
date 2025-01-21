@@ -77,6 +77,7 @@ const Header = () => {
         </Col>
         <Col xs={0} sm={2}>
           <Button
+            onClick={() => router.push("/search")}
             shape="circle"
             icon={<SearchOutlined />}
             size="large"

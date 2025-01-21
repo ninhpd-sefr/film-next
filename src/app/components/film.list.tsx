@@ -5,7 +5,7 @@ import useSWR from "swr";
 import { Card, Typography, Spin, Row, Col, Pagination } from "antd";
 import { PlayCircleOutlined } from "@ant-design/icons";
 import { FilmData } from "../../../types/app";
-import { APP_DOMAIN_CDN_IMAGE } from "../../../constant";
+import { APP_DOMAIN_CDN_IMAGE, APP_DOMAIN_FRONTEND } from "../../../constant";
 import SkeletonLoader from "./film.skeleton.loader";
 import { useRouter } from "next/navigation";
 
@@ -22,7 +22,7 @@ export default function FilmList({ category }: { category: string }) {
 
   const { data, error } = useSWR(
     category
-      ? `https://phimapi.com/v1/api/danh-sach/${category}?page=${currentPage}&limit=${itemsPerPage}`
+      ? `${APP_DOMAIN_FRONTEND}/v1/api/danh-sach/${category}?page=${currentPage}&limit=${itemsPerPage}`
       : null,
     fetcher
   );
@@ -41,7 +41,7 @@ export default function FilmList({ category }: { category: string }) {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div>
       <Row gutter={[16, 16]}>
         {data?.data?.items?.map((movie: FilmData) => (
           <Col key={movie._id} xs={24} sm={12} md={8} lg={4}>

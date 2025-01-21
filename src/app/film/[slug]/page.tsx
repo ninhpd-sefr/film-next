@@ -22,6 +22,7 @@ import {
 } from "@ant-design/icons";
 import { MoviePlayer } from "@/app/components/movie.player";
 import { APP_DOMAIN_FRONTEND } from "../../../../constant";
+import { DetailSkeletonLoader } from "@/app/components/film.detail.skeleton.loader";
 
 // Fetcher function for useSWR
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -38,10 +39,7 @@ export default function MovieDetailPage() {
   if (isLoading) {
     return (
       <div style={{ textAlign: "center", marginTop: "50px" }}>
-        <Skeleton active />
-        <Skeleton active />
-        <Skeleton active />
-        <Skeleton active />
+        <DetailSkeletonLoader />
       </div>
     );
   }
