@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Layout, Menu, Drawer, Row, Col } from "antd";
+import { Button, Layout, Menu, Drawer, Row, Col, Dropdown } from "antd";
 import { useRouter, usePathname } from "next/navigation";
 import {
   DownloadOutlined,
   SearchOutlined,
   MenuOutlined,
+  DownOutlined,
 } from "@ant-design/icons";
+import { GENRES_DEFAULT, NATION_DEFAULT } from "../../../constant";
 
 const { Header: AntHeader } = Layout;
 
@@ -33,6 +35,47 @@ const Header = () => {
     if (pathname.startsWith("/search")) return "5";
     return ""; // No active key for unknown paths
   };
+
+  const genresMenu = (
+    <Menu
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(4, 1fr)", // Adjust columns to match your layout
+        gap: "8px",
+        padding: "12px",
+      }}
+    >
+      {GENRES_DEFAULT.map((genre, index) => (
+        <Menu.Item
+          key={index}
+          style={{ padding: "6px 12px", textAlign: "center" }}
+          onClick={() => router.push(`/genres/${genre.slug}`)}
+        >
+          {genre.name}
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
+  const nationsMenu = (
+    <Menu
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(4, 1fr)", // Adjust columns to match your layout
+        gap: "8px",
+        padding: "12px",
+      }}
+    >
+      {NATION_DEFAULT.map((nation, index) => (
+        <Menu.Item
+          key={index}
+          style={{ padding: "6px 12px", textAlign: "center" }}
+          onClick={() => router.push(`/nations/${nation.slug}`)}
+        >
+          {nation.name}
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
 
   return (
     <AntHeader
@@ -84,6 +127,17 @@ const Header = () => {
             <Menu.Item key="4" onClick={() => router.push("/tvshows")}>
               TV Shows
             </Menu.Item>
+
+            <Dropdown overlay={genresMenu} trigger={["click"]}>
+              <Menu.Item key="6">
+                Genres <DownOutlined />
+              </Menu.Item>
+            </Dropdown>
+            <Dropdown overlay={nationsMenu} trigger={["click"]}>
+              <Menu.Item key="7">
+                Nations <DownOutlined />
+              </Menu.Item>
+            </Dropdown>
           </Menu>
         </Col>
         <Col xs={0} sm={2}>
@@ -112,7 +166,7 @@ const Header = () => {
         onClose={closeDrawer}
         open={isDrawerVisible}
       >
-        <Menu mode="vertical" selectedKeys={[getSelectedKey()]}>
+        <Menu mode="inline" selectedKeys={[getSelectedKey()]}>
           <Menu.Item
             key="5"
             onClick={() => {
@@ -158,6 +212,32 @@ const Header = () => {
           >
             TV Shows
           </Menu.Item>
+          <Menu.SubMenu key="sub1" title="Genres">
+            {GENRES_DEFAULT.map((genre, index) => (
+              <Menu.Item
+                key={`1-${index}`}
+                onClick={() => {
+                  closeDrawer();
+                  router.push(`/genres/${genre.slug}`);
+                }}
+              >
+                {genre.name}
+              </Menu.Item>
+            ))}
+          </Menu.SubMenu>
+          <Menu.SubMenu key="sub2" title="Nations">
+            {NATION_DEFAULT.map((nation, index) => (
+              <Menu.Item
+                key={`2-${index}`}
+                onClick={() => {
+                  closeDrawer();
+                  router.push(`/nations/${nation.slug}`);
+                }}
+              >
+                {nation.name}
+              </Menu.Item>
+            ))}
+          </Menu.SubMenu>
         </Menu>
       </Drawer>
     </AntHeader>

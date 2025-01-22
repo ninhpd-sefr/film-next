@@ -13,7 +13,15 @@ import NProgress from "nprogress";
 // Fetcher function
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-export default function FilmList({ category }: { category: string }) {
+export default function FilmList({
+  category,
+  genres,
+  nations,
+}: {
+  category?: string;
+  genres?: string;
+  nations?: string;
+}) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
 
@@ -22,6 +30,10 @@ export default function FilmList({ category }: { category: string }) {
   const { data, error, isLoading } = useSWR(
     category
       ? `${APP_DOMAIN_FRONTEND}/v1/api/danh-sach/${category}?page=${currentPage}&limit=${itemsPerPage}`
+      : genres
+      ? `${APP_DOMAIN_FRONTEND}/v1/api/the-loai/${genres}?page=${currentPage}&limit=${itemsPerPage}`
+      : nations
+      ? `${APP_DOMAIN_FRONTEND}/v1/api/quoc-gia/${nations}?page=${currentPage}&limit=${itemsPerPage}`
       : null,
     fetcher
   );
