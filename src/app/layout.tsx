@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Header from "./components/app.header";
 import AppFooter from "./components/app.footer";
+import styles from "./layout.module.css";
 import "nprogress/nprogress.css";
-import styles from "./layput.module.css";
+import AntdStyledComponentsRegistry from "./components/AntdStyledComponentsRegistry";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,9 +26,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Header />
-        <div className={styles.container}>{children}</div>
-        <AppFooter />
+        <AntdStyledComponentsRegistry>
+          <Header />
+          <div className={styles.container}>{children}</div>
+          <AppFooter />
+        </AntdStyledComponentsRegistry>
       </body>
     </html>
   );
