@@ -9,6 +9,7 @@ import { APP_DOMAIN_CDN_IMAGE, APP_DOMAIN_FRONTEND } from "../../../constant";
 import SkeletonLoader from "./film.skeleton.loader";
 import { useRouter } from "next/navigation";
 import NProgress from "nprogress";
+import BackToTopButton from "./button.back";
 
 // Fetcher function
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -132,7 +133,7 @@ export default function FilmList({
           pageSizeOptions={["12", "18", "30"]} // Options for items per page
         />
       </div>
-
+      <BackToTopButton />
       <style jsx>{`
         .hover-overlay {
           pointer-events: none;
