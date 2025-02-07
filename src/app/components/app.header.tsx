@@ -8,6 +8,8 @@ import {
   SearchOutlined,
   MenuOutlined,
   DownOutlined,
+  HeartFilled,
+  HeartOutlined,
 } from "@ant-design/icons";
 import { GENRES_DEFAULT, NATION_DEFAULT } from "../../../constant";
 
@@ -148,6 +150,18 @@ const Header = () => {
             size="large"
             style={{ marginRight: 20 }}
           />
+        </Col>
+        <Col xs={0} sm={2}>
+          <Button
+            onClick={() => router.push("/love")}
+            type="primary"
+            shape="default"
+            icon={<HeartOutlined />}
+            size="large"
+            style={{ marginRight: 20 }}
+          >
+            Love
+          </Button>
         </Col>
         <Col xs={4} sm={0}>
           <Button

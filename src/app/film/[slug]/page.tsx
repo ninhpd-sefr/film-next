@@ -37,17 +37,26 @@ export default function MovieDetailPage() {
   const [fullURL, setFullURL] = useState<string>("");
   const { slug } = useParams();
 
+  const { data, error, isLoading } = useSWR(
+    `${APP_DOMAIN_FRONTEND}/phim/${slug}`,
+    fetcher
+  );
+  let lovedFilms = JSON.parse(localStorage.getItem("lovedFilms") ?? "[]");
+  let filmIndex = lovedFilms.findIndex(
+    (item: any) => item?.movie?._id === data?.movie?._id
+  );
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const currentURL = `${window.location.origin}/film/${slug}`;
       setFullURL(currentURL);
     }
-  }, [slug]);
-
-  const { data, error, isLoading } = useSWR(
-    `${APP_DOMAIN_FRONTEND}/phim/${slug}`,
-    fetcher
-  );
+    if (filmIndex === -1) {
+      setLoved(false);
+    } else {
+      setLoved(true);
+    }
+  }, [slug, lovedFilms]);
 
   useEffect(() => {
     if (isLoading) {
@@ -59,6 +68,19 @@ export default function MovieDetailPage() {
       NProgress.done();
     };
   }, [isLoading]);
+
+  const handleLoveFilm = () => {
+    if (filmIndex === -1) {
+      // Film not in the list, add it
+      localStorage.setItem("lovedFilms", JSON.stringify([...lovedFilms, data]));
+      message.success("Added to Love List!");
+    } else {
+      // Film exists, remove it
+      lovedFilms.splice(filmIndex, 1);
+      localStorage.setItem("lovedFilms", JSON.stringify(lovedFilms));
+      message.warning("Removed from Love List!");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -139,23 +161,31 @@ export default function MovieDetailPage() {
           <Row>
             <Col style={{ marginRight: 40 }}>
               <Title level={4}>
-                <Tooltip title="Click to love">
-                  {loved ? (
+                {loved ? (
+                  <Tooltip title=" Click to remove from love list">
                     <Button
-                      onClick={() => setLoved(!loved)}
+                      onClick={() => {
+                        setLoved(!loved);
+                        handleLoveFilm();
+                      }}
                       type="link"
                       shape="circle"
                       icon={<HeartFilled />}
                     />
-                  ) : (
+                  </Tooltip>
+                ) : (
+                  <Tooltip title="Click to love">
                     <Button
-                      onClick={() => setLoved(!loved)}
+                      onClick={() => {
+                        setLoved(!loved);
+                        handleLoveFilm();
+                      }}
                       type="link"
                       shape="circle"
                       icon={<HeartOutlined />}
                     />
-                  )}
-                </Tooltip>{" "}
+                  </Tooltip>
+                )}
                 Love
               </Title>
             </Col>
