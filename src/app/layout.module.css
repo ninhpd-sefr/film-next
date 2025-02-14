@@ -2,6 +2,11 @@
   padding: 100px 150px 20px 150px;
   min-height: 600px;
 }
+
+[data-theme="dark"] .container {
+  background-color: #161d3a;
+}
+
 @media (min-width: 1024px) and (max-width: 1199px) {
   .container {
     padding: 100px 70px 20px 70px;

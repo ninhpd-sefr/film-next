@@ -12,6 +12,7 @@ import {
   HeartOutlined,
 } from "@ant-design/icons";
 import { GENRES_DEFAULT, NATION_DEFAULT } from "../../../constant";
+import { useTheme } from "../context/ThemeContext";
 
 const { Header: AntHeader } = Layout;
 
@@ -19,6 +20,8 @@ const Header = () => {
   const [isDrawerVisible, setDrawerVisible] = useState(false);
   const router = useRouter();
   const pathname = usePathname(); // Get the current path
+
+  const { theme, toggleTheme } = useTheme();
 
   const handleDrawerToggle = () => {
     setDrawerVisible(!isDrawerVisible);
@@ -110,7 +113,7 @@ const Header = () => {
             FPT FILM
           </div>
         </Col>
-        <Col xs={0} sm={16}>
+        <Col xs={0} sm={8} md={10} lg={14}>
           <Menu
             theme="dark"
             mode="horizontal"
@@ -158,9 +161,16 @@ const Header = () => {
             shape="default"
             icon={<HeartOutlined />}
             size="large"
-            style={{ marginRight: 20 }}
           >
             Love
+          </Button>
+        </Col>
+        <Col xs={0} sm={2}>
+          <Button
+            onClick={toggleTheme}
+            style={{ marginRight: 20, cursor: "pointer" }}
+          >
+            {theme === "light" ? "🌙" : "☀️"}
           </Button>
         </Col>
         <Col xs={4} sm={0}>
@@ -181,6 +191,9 @@ const Header = () => {
         open={isDrawerVisible}
       >
         <Menu mode="inline" selectedKeys={[getSelectedKey()]}>
+          <Menu.Item key="5" onClick={toggleTheme}>
+            {theme === "light" ? "🌙 Dark" : "☀️ Light"}
+          </Menu.Item>
           <Menu.Item
             key="5"
             onClick={() => {

@@ -5,6 +5,8 @@ import AppFooter from "./components/app.footer";
 import styles from "./layout.module.css";
 import "nprogress/nprogress.css";
 import AntdStyledComponentsRegistry from "./components/AntdStyledComponentsRegistry";
+import { ThemeProvider } from "./context/ThemeContext";
+import { ConfigProvider } from "antd";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,11 +28,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AntdStyledComponentsRegistry>
-          <Header />
-          <div className={styles.container}>{children}</div>
-          <AppFooter />
-        </AntdStyledComponentsRegistry>
+        <ThemeProvider>
+          <AntdStyledComponentsRegistry>
+            <Header />
+            <div className={styles.container}>{children}</div>
+            <AppFooter />
+          </AntdStyledComponentsRegistry>
+        </ThemeProvider>
       </body>
     </html>
   );
